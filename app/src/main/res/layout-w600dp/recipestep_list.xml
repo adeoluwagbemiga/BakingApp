@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,20 +15,20 @@
     <!--
     This layout is a two-pane layout for the RecipeSteps
     master/detail flow.
-    
+
     -->
 
-   <!-- <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/recipestep_list"
-        android:name="com.adeoluwa.android.bakingapp.RecipeStepListFragment"
-        android:layout_width="@dimen/item_width"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="com.adeoluwa.android.bakingapp.RecipeStepListActivity"
-        tools:listitem="@layout/recipestep_list_content" />-->
+    <!-- <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+         xmlns:tools="http://schemas.android.com/tools"
+         android:id="@+id/recipestep_list"
+         android:name="com.adeoluwa.android.bakingapp.RecipeStepListFragment"
+         android:layout_width="@dimen/item_width"
+         android:layout_height="match_parent"
+         android:layout_marginLeft="16dp"
+         android:layout_marginRight="16dp"
+         app:layoutManager="LinearLayoutManager"
+         tools:context="com.adeoluwa.android.bakingapp.RecipeStepListActivity"
+         tools:listitem="@layout/recipestep_list_content" />-->
     <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -39,7 +40,14 @@
                 android:id="@+id/ingredient_linearlayout"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardElevation="@dimen/cardview_default_elevation"
+                app:cardCornerRadius="@dimen/cardview_default_radius">
+            <!--<LinearLayout
+                android:id="@+id/ingredient_linearlayout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">-->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
