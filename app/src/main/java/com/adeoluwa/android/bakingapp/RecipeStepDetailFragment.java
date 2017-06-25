@@ -107,6 +107,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                     appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
                 appBarLayout.setTitle(mStep.getShortdescription());
+
             }
         }
     }
