@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Baking App</string>
+    <string name="base_url">https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/</string>
+    <string name="network_resource_param">baking.json</string>
+    <string name="title_recipestep_list">RecipeSteps</string>
+    <string name="title_recipestep_detail">RecipeStep Detail</string>
+    <string name="appwidget_text">Baking App</string>
+    <string name="add_widget">Add widget</string>
+</resources>
