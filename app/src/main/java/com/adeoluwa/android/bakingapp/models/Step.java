@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class Step implements Parcelable {
     private int id;
-    private String shortdescription;
+    private String shortDescription;
     private String description;
     private String videoURL;
     private String thumbnailURL;
@@ -23,11 +23,11 @@ public class Step implements Parcelable {
     }
 
     public String getShortdescription() {
-        return shortdescription;
+        return shortDescription;
     }
 
-    public void setShortdescription(String shortdescription) {
-        this.shortdescription = shortdescription;
+    public void setShortdescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
     public String getDescription() {
@@ -54,9 +54,9 @@ public class Step implements Parcelable {
         this.thumbnailURL = thumbnailURL;
     }
 
-    public Step(int id, String shortdescription, String description, String videoURL, String thumbnailURL) {
+    public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL) {
         this.id = id;
-        this.shortdescription = shortdescription;
+        this.shortDescription = shortDescription;
         this.description = description;
         this.videoURL = videoURL;
         this.thumbnailURL = thumbnailURL;
@@ -65,7 +65,7 @@ public class Step implements Parcelable {
 
     protected Step(Parcel in) {
         id = in.readInt();
-        shortdescription = in.readString();
+        shortDescription = in.readString();
         description = in.readString();
         videoURL = in.readString();
         thumbnailURL = in.readString();
@@ -91,7 +91,7 @@ public class Step implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeString(shortdescription);
+        dest.writeString(shortDescription);
         dest.writeString(description);
         dest.writeString(videoURL);
         dest.writeString(thumbnailURL);

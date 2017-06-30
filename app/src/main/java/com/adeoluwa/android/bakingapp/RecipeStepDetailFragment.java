@@ -2,6 +2,7 @@ package com.adeoluwa.android.bakingapp;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
@@ -11,11 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.adeoluwa.android.bakingapp.models.Step;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -62,6 +66,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     @BindView(R.id.exo_player) SimpleExoPlayerView mExoPlayerView;
     @BindView(R.id.btn_next) Button mNextButton;
     @BindView(R.id.btn_previous) Button mPreviousButton;
+    @BindView(R.id.img_step_image) ImageView mStepImageView;
     //@BindView(R.id.toolbar_layout)
     CollapsingToolbarLayout  appBarLayout;
 
@@ -133,6 +138,18 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
         if (mStep != null) {
             //((TextView) rootView.findViewById(R.id.recipestep_detail)).setText(mItem.details);
             mStepDescriptionTextView.setText(mStep.getDescription());
+            if(mStep.getThumbnailURL() != null || mStep.getThumbnailURL() != ""){
+                mStepImageView.setVisibility(View.VISIBLE);
+                Glide.with(this)
+                        .load(mStep.getThumbnailURL())
+                        .thumbnail(0.5f)
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(mStepImageView);
+            }
+            if(mStep.getVideoURL() == null || mStep.getVideoURL() == ""){
+                mExoPlayerView.setVisibility(View.GONE);
+            }
         }
 
         mPreviousButton.setOnClickListener(this);
@@ -146,6 +163,11 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                 new DefaultTrackSelector(),
                 defaultLoadControl);
         //new DefaultLoadControl());
+        if(getActivity().getApplication().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            mExoPlayerView.setFitsSystemWindows(true);
+        }//else{
+            //layoutManager.setSpanCount(4);
+        //}
         mExoPlayerView.setPlayer(mExoPlayer);
         mExoPlayer.setPlayWhenReady(autoPlay);
 
@@ -237,11 +259,11 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_next:
-                if (mStepIndex < mSteps.size() - 1) {
+                if (mStepIndex < mSteps.size() - 1 ) {
                     int index = ++mStepIndex;
                     mStep = mSteps.get(index);
                     mStepDescriptionTextView.setText(mStep.getDescription());
-                    appBarLayout.setTitle(mStep.getShortdescription());
+                    //appBarLayout.setTitle(mStep.getShortdescription());
                     //playStepVideo(index);
                     initExoPlayer();
                 } else {
@@ -254,7 +276,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                     int index = --mStepIndex;
                     mStep = mSteps.get(index);
                     mStepDescriptionTextView.setText(mStep.getDescription());
-                    appBarLayout.setTitle(mStep.getShortdescription());
+                    //appBarLayout.setTitle(mStep.getShortdescription());
                     //playStepVideo(index);
                     initExoPlayer();
                 } else {

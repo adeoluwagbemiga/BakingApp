@@ -213,15 +213,28 @@ public class RecipeStepListActivity extends AppCompatActivity implements StepsAd
 
     @Override
     public void onItemClick(int position) {
-        Intent intent = new Intent(this, RecipeStepDetailActivity.class);
-        intent.putExtra("recipe_name", mName);
-        intent.putExtra("step_position", position);
-        intent.putExtra("steps_size", mSteps.size());
-        intent.putExtra("step", mSteps.get(position));
-        intent.putParcelableArrayListExtra("steps", (ArrayList<? extends Parcelable>) mSteps);
-        startActivity(intent);
+        if(mTwoPane){
+            Bundle arguments = new Bundle();
+            arguments.putString(RecipeStepDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(RecipeStepDetailFragment.ARG_ITEM_ID));
+            arguments.putParcelable("step", mSteps.get(position));
+            arguments.putInt("step_position", position);
+            arguments.putInt("steps_size", mSteps.size());
+            arguments.putParcelableArrayList("steps", (ArrayList<? extends Parcelable>) mSteps);
+            RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.recipestep_detail_container, fragment)
+                    .commit();
+        }else {
+            Intent intent = new Intent(this, RecipeStepDetailActivity.class);
+            intent.putExtra("recipe_name", mName);
+            intent.putExtra("step_position", position);
+            intent.putExtra("steps_size", mSteps.size());
+            intent.putExtra("step", mSteps.get(position));
+            intent.putParcelableArrayListExtra("steps", (ArrayList<? extends Parcelable>) mSteps);
+            startActivity(intent);
+        }
         //Toast.makeText(this, "Step " + String.valueOf(position) + " Clicked", Toast.LENGTH_SHORT).show();
     }
-
-
 }

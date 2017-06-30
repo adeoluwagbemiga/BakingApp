@@ -50,6 +50,8 @@ public class NetworkUtils {
 
             if (response == HttpURLConnection.HTTP_OK)
             {
+                urlConnection.setConnectTimeout(8000);
+                urlConnection.setReadTimeout(10000);
                 builder = new StringBuilder();
                 try (BufferedReader reader = new BufferedReader(
                         new InputStreamReader(urlConnection.getInputStream())))

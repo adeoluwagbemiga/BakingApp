@@ -1,6 +1,7 @@
 package com.adeoluwa.android.bakingapp;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
@@ -75,6 +76,9 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
                 mStepsSize = stepbundle.getInt("steps_size");
                 mSteps = stepbundle.getParcelableArrayList("steps");
             }
+            if(getApplication().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                actionBar.hide();
+            }
             initializeFragment();
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
@@ -94,6 +98,9 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
             mStepPosition = savedInstanceState.getInt("step_position");
             mStepsSize = savedInstanceState.getInt("steps_size");
             mSteps = savedInstanceState.getParcelableArrayList("steps");
+            if(getApplication().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                actionBar.hide();
+            }
             initializeFragment();
         }
     }
@@ -109,7 +116,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.recipestep_detail_container, fragment)
+                .replace(R.id.recipestep_detail_container, fragment)
                 .commit();
     }
     @Override

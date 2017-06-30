@@ -75,12 +75,52 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         public void bind(int position) {
             Recipe recipe = mList.get(position);
             recipename.setText(recipe.getName());
-            Glide.with(mContext)
-                    .load(recipe.getImageurl())
-                    .thumbnail(0.5f)
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(recipeimage);
+            //if(recipe.getName() == "Nutella Pie"){
+                if(recipe.getImageurl() != null || recipe.getImageurl() != "" || recipe.getImageurl() != " "){
+                    recipeimage.setVisibility(View.VISIBLE);
+                    Glide.with(mContext)
+                            .load(recipe.getImageurl())
+                            //.load("http://goodtoknow.media.ipcdigital.co.uk/111/00000c149/62c4_orh412w625/Toffee-chocolate-cheesecake.jpg")
+                            .thumbnail(0.5f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(recipeimage);
+
+                }
+            /*}else if(recipe.getName() == "Brownies") {
+                if(recipe.getImageurl() != null || recipe.getImageurl() != ""){
+                    recipeimage.setVisibility(View.VISIBLE);
+                    Glide.with(mContext)
+                            .load(recipe.getImageurl()).placeholder(R.mipmap.ic_brownies)
+                            .thumbnail(0.5f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(recipeimage);
+
+                }
+            }else if(recipe.getName() == "Yellow Cake"){
+                if(recipe.getImageurl() != null || recipe.getImageurl() != ""){
+                    recipeimage.setVisibility(View.VISIBLE);
+                    Glide.with(mContext)
+                            .load(recipe.getImageurl()).placeholder(R.mipmap.ic_yellow_cake)
+                            .thumbnail(0.5f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(recipeimage);
+
+                }
+            }else if(recipe.getName() == "Cheesecake"){
+                if(recipe.getImageurl() != null || recipe.getImageurl() != ""){
+                    recipeimage.setVisibility(View.VISIBLE);
+                    Glide.with(mContext)
+                            .load(recipe.getImageurl()).placeholder(R.mipmap.ic_cheese_cake)
+                            .thumbnail(0.5f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(recipeimage);
+
+                }
+            }*/
         }
 
         @Override

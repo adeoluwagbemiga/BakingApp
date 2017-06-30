@@ -62,10 +62,10 @@ public class IngredientsWidgetRemoteViewsFactory implements RemoteViewsService.R
             return null;
         }
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.ingredient_item);
-        remoteViews.setTextViewText(R.id.txt_ingredient_description, mCursor.getString(4));
-        remoteViews.setTextViewText(R.id.txt_ingredient_measure, mCursor.getString(3));
-        remoteViews.setTextViewText(R.id.txt_ingredient_quantity, String.valueOf(mCursor.getDouble(2)));
-        remoteViews.setTextViewText(R.id.appwidget_text, mCursor.getString(1));
+        remoteViews.setTextViewText(R.id.txt_ingredient_description, " " + mCursor.getString(4));
+        remoteViews.setTextViewText(R.id.txt_ingredient_measure, " " + mCursor.getString(3));
+        remoteViews.setTextViewText(R.id.txt_ingredient_quantity, " " + String.valueOf(mCursor.getDouble(2)));
+        //remoteViews.setTextViewText(R.id.appwidget_text, " " + mCursor.getString(1));
 
         //remoteViews.setOnClickFillInIntent(R.id.ingredient_item, new Intent());
         return remoteViews;
