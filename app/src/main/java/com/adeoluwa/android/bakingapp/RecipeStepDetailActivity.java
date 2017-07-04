@@ -42,7 +42,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipestep_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +54,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -130,7 +131,13 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, RecipeStepListActivity.class));
+            Intent intent = new Intent(this, RecipeStepListActivity.class);
+            intent.putExtra("steps", mSteps);
+            intent.putExtra("step_position", mStepPosition);
+            //NavUtils.navigateUpTo(this, new Intent(this, RecipeStepListActivity.class));
+            NavUtils.navigateUpTo(this, intent);
+            //NavUtils.navigateUpFromSameTask(this);
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -144,16 +151,10 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
         outState.putInt("steps_size", mStepsSize);
         outState.putParcelableArrayList("steps", mSteps);
     }
-/*public void moveToNext()
-    {
-        mStepPosition++;
-        mStep = mSteps.get(mStepPosition);
-        initializeFragment();
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
     }
-    public void moveToPrevious()
-    {
-        mStepPosition--;
-        mStep = mSteps.get(mStepPosition);
-        initializeFragment();
-    }*/
 }

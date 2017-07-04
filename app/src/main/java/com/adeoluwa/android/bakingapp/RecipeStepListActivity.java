@@ -1,8 +1,10 @@
 package com.adeoluwa.android.bakingapp;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -53,7 +55,7 @@ public class RecipeStepListActivity extends AppCompatActivity implements StepsAd
     private List<Ingredient> mIngredients = new ArrayList<Ingredient>();
     private List<Step> mSteps = new ArrayList<Step>();
 
-    private static int mServings;
+    private static int mServings = 0;
     private static int mRecipeId;
     private static String mName;
 
@@ -66,6 +68,7 @@ public class RecipeStepListActivity extends AppCompatActivity implements StepsAd
     private LinearLayoutManager stepsLayoutManager;
     private IngredientsAdapter mIngredientsAdapter;
     private StepsAdapter mStepsAdapter;
+    private static int mStepAdapterPosition = 0;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -112,18 +115,38 @@ public class RecipeStepListActivity extends AppCompatActivity implements StepsAd
                 toolbar.setTitle(mName);
                 saveIngredientsLocal();
             }
-            ;
-        }else {
-            if (savedInstanceState != null && savedInstanceState.containsKey("recipe")) {
-                mRecipe = savedInstanceState.getParcelable("recipe");
-                mIngredients = mRecipe.getIngredients();
-                mSteps = mRecipe.getSteps();
-                //Toast.makeText(this, mRecipe.getName(), Toast.LENGTH_SHORT).show();
-
+                /*loadCompleteRecipe();
                 mName = mRecipe.getName();
                 mRecipeId = mRecipe.getid();
                 mServings = mRecipe.getServings();
                 toolbar.setTitle(mName);
+            }*/
+
+        }else {
+            if (savedInstanceState != null && savedInstanceState.containsKey("recipe")) {
+                mRecipe = savedInstanceState.getParcelable("recipe");
+                if(savedInstanceState.containsKey("ingredients")) {
+                    mIngredients = savedInstanceState.getParcelableArrayList("ingredients");
+                }else{
+                    mIngredients = mRecipe.getIngredients();
+                }
+                if(savedInstanceState.containsKey("ingredients")) {
+                    mSteps = savedInstanceState.getParcelableArrayList("steps");
+                }else{
+                    mSteps = mRecipe.getSteps();
+                }
+                //mSteps = mRecipe.getSteps();
+                //Toast.makeText(this, mRecipe.getName(), Toast.LENGTH_SHORT).show();
+
+                //mName = mRecipe.getName();
+                //mRecipeId = mRecipe.getid();
+                //mServings = mRecipe.getServings();
+                //toolbar.setTitle(mName);
+            }else if(getIntent().hasExtra("steps")){
+                Intent detailIntent = getIntent();
+                mSteps = detailIntent.getParcelableArrayListExtra("steps");
+                mStepAdapterPosition = detailIntent.getIntExtra("step_position", 0);
+                loadIngredients(1);
             }
         }
         /*mIngredients = mRecipe.getIngredients();
@@ -153,6 +176,9 @@ public class RecipeStepListActivity extends AppCompatActivity implements StepsAd
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("recipe", mRecipe);
+        outState.putParcelableArrayList("ingredients", (ArrayList<? extends Parcelable>) mIngredients);
+        outState.putParcelableArrayList("steps", (ArrayList<? extends Parcelable>) mSteps);
+        outState.putInt("step_position", mStepAdapterPosition);
     }
 
     @Override
@@ -206,6 +232,7 @@ public class RecipeStepListActivity extends AppCompatActivity implements StepsAd
         mStepsAdapter = new StepsAdapter(this, mSteps);
         mStepsRecyclerView.setAdapter(mStepsAdapter);
         mStepsAdapter.notifyDataSetChanged();
+        mStepsRecyclerView.scrollToPosition(mStepAdapterPosition);
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         //recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
@@ -236,5 +263,68 @@ public class RecipeStepListActivity extends AppCompatActivity implements StepsAd
             startActivity(intent);
         }
         //Toast.makeText(this, "Step " + String.valueOf(position) + " Clicked", Toast.LENGTH_SHORT).show();
+    }
+    private void loadCompleteRecipe(){
+        //ContentResolver contentResolver = getContentResolver();
+        //String recipeToFetch = BakingContract.RecipeEntry.COLUMN_RECIPE_ID + " = " + recipeId;
+        Cursor recipe_cursor = getContentResolver().query(BakingContract.RecipeEntry.CONTENT_URI, null, null  , null, null);
+
+
+        //Cursor recipe_cursor = contentResolver.query()
+        if (recipe_cursor != null && recipe_cursor.getCount() > 0) {
+
+            //recipe_cursor.moveToFirst();
+            //while (!recipe_cursor.isAfterLast()) {
+            //}
+            if (recipe_cursor.moveToFirst()) {
+                int _id = recipe_cursor.getInt(recipe_cursor.getColumnIndex(BakingContract.RecipeEntry.COLUMN_RECIPE_ID));
+                String name = recipe_cursor.getString(recipe_cursor.getColumnIndex(BakingContract.RecipeEntry.COLUMN_RECIPE_NAME));
+                int servings = recipe_cursor.getInt(recipe_cursor.getColumnIndex(BakingContract.RecipeEntry.COLUMN_RECIPE_SERVINGS));
+                String image_url = recipe_cursor.getString(recipe_cursor.getColumnIndex(BakingContract.RecipeEntry.COLUMN_IMAGE_URL));
+                loadIngredients(_id); loadSteps(_id);
+                mRecipe = new Recipe(_id, name, servings, image_url, mIngredients, mSteps);
+            }
+            recipe_cursor.close();
+        }
+
+    }
+    private void loadIngredients(int recipeId){
+        String ingredientToFetch = BakingContract.IngredientEntry.COLUMN_RECIPE_ID + " = " + recipeId;
+        Cursor ingredient_cursor = getContentResolver().query(BakingContract.IngredientEntry.CONTENT_URI, null, null, null, null);
+        if (ingredient_cursor != null && ingredient_cursor.getCount() > 0) {
+
+            ingredient_cursor.moveToFirst();
+            while (!ingredient_cursor.isAfterLast()) {
+                int recipe_id = ingredient_cursor.getInt(ingredient_cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_RECIPE_ID));
+                String recipe_name = ingredient_cursor.getString(ingredient_cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_RECIPE_NAME));
+                double quantity = ingredient_cursor.getDouble(ingredient_cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_QUANTITY));
+                String measure = ingredient_cursor.getString(ingredient_cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_MEASURE));
+                String ingredient = ingredient_cursor.getString(ingredient_cursor.getColumnIndex(BakingContract.IngredientEntry.COLUMN_INGREDIENT));
+                mIngredients.add(new Ingredient(quantity, measure, ingredient));
+                ingredient_cursor.moveToNext();
+            }
+
+            ingredient_cursor.close();
+        }
+    }
+    private void loadSteps(int recipeId){
+        String stepToFetch = BakingContract.StepEntry.COLUMN_RECIPE_ID + " = " + recipeId;
+        Cursor step_cursor = getContentResolver().query(BakingContract.StepEntry.CONTENT_URI, null, stepToFetch, null, null);
+        if (step_cursor != null && step_cursor.getCount() > 0) {
+
+            step_cursor.moveToFirst();
+            while (!step_cursor.isAfterLast()) {
+                int recipe_id = step_cursor.getInt(step_cursor.getColumnIndex(BakingContract.StepEntry.COLUMN_RECIPE_ID));
+                String recipe_name = step_cursor.getString(step_cursor.getColumnIndex(BakingContract.StepEntry.COLUMN_RECIPE_NAME));
+                int step_id = step_cursor.getInt(step_cursor.getColumnIndex(BakingContract.StepEntry.COLUMN_STEP_ID));
+                String shortDesc = step_cursor.getString(step_cursor.getColumnIndex(BakingContract.StepEntry.COLUMN_SHORT_DESCRIPTION));
+                String description = step_cursor.getString(step_cursor.getColumnIndex(BakingContract.StepEntry.COLUMN_DESCRIPTION));
+                String videoUrl = step_cursor.getString(step_cursor.getColumnIndex(BakingContract.StepEntry.COLUMN_VIDEO_URL));
+                String thumbnailUrl = step_cursor.getString(step_cursor.getColumnIndex(BakingContract.StepEntry.COLUMN_THUMBNAIL_URL));
+                mSteps.add(new Step(step_id, shortDesc, description, videoUrl, thumbnailUrl));
+                step_cursor.moveToNext();
+            }
+            step_cursor.close();
+        }
     }
 }
