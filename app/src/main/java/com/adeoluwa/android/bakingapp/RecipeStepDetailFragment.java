@@ -137,19 +137,8 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
         // Show the dummy content as text in a TextView.
         if (mStep != null) {
             //((TextView) rootView.findViewById(R.id.recipestep_detail)).setText(mItem.details);
-            mStepDescriptionTextView.setText(mStep.getDescription());
-            if(mStep.getThumbnailURL() != null || mStep.getThumbnailURL() != ""){
-                mStepImageView.setVisibility(View.VISIBLE);
-                Glide.with(this)
-                        .load(mStep.getThumbnailURL())
-                        .thumbnail(0.5f)
-                        .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(mStepImageView);
-            }
-            if(mStep.getVideoURL() == null || mStep.getVideoURL() == ""){
-                mExoPlayerView.setVisibility(View.GONE);
-            }
+            //mStepDescriptionTextView.setText(mStep.getDescription());
+            loadUiItems();
         }
 
         mPreviousButton.setOnClickListener(this);
@@ -262,29 +251,51 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                 if (mStepIndex < mSteps.size() - 1 ) {
                     int index = ++mStepIndex;
                     mStep = mSteps.get(index);
-                    mStepDescriptionTextView.setText(mStep.getDescription());
+                    //mStepDescriptionTextView.setText(mStep.getDescription());
                     //appBarLayout.setTitle(mStep.getShortdescription());
                     //playStepVideo(index);
+                    loadUiItems();
                     initExoPlayer();
                 } else {
-                    mNextButton.setVisibility(View.INVISIBLE);
-                    //Toast.makeText(getActivity(), R.string.end_of_steps, Toast.LENGTH_LONG).show();
+                    //mNextButton.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getActivity(), "There are no more next items", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.btn_previous:
                 if (mStepIndex > 0) {
                     int index = --mStepIndex;
                     mStep = mSteps.get(index);
-                    mStepDescriptionTextView.setText(mStep.getDescription());
+                    //mStepDescriptionTextView.setText(mStep.getDescription());
                     //appBarLayout.setTitle(mStep.getShortdescription());
                     //playStepVideo(index);
+                    loadUiItems();
                     initExoPlayer();
                 } else {
-                    mPreviousButton.setVisibility(View.INVISIBLE);
-                    //Toast.makeText(getActivity(), R.string.start_of_steps, Toast.LENGTH_LONG).show();
+                    //mPreviousButton.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getActivity(), "There are no more previous items", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
 
+    }
+    private void loadUiItems()
+    {
+        mStepDescriptionTextView.setText(mStep.getDescription());
+        if(!mStep.getThumbnailURL().equals(null) || !mStep.getThumbnailURL().isEmpty()){
+            mStepImageView.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(mStep.getThumbnailURL())
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(mStepImageView);
+        }else{
+            mStepImageView.setVisibility(View.GONE);
+        }
+        if(mStep.getVideoURL().equals(null) || mStep.getVideoURL().isEmpty()){
+            mExoPlayerView.setVisibility(View.GONE);
+        }else{
+            mExoPlayerView.setVisibility(View.VISIBLE);
+        }
     }
 }

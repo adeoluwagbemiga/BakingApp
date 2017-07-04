@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
@@ -61,6 +62,13 @@ public class IngredientsWidget extends AppWidgetProvider {
                     new ComponentName(context, getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.ingredient_widget_listview);
         }*/
+        Bundle extras = intent.getExtras();
+        if(!extras.equals(null)){
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), IngredientsWidget.class.getName());
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+            onUpdate(context, appWidgetManager, appWidgetIds);
+        }
     }
     @Override
     public void onEnabled(Context context) {
